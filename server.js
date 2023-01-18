@@ -3,24 +3,29 @@ const { v4: uuid } = require('uuid');
 const { ChatBot } = require('./components/chatbot/chatbot');
 
 const SERVER_BOT = 'Серверный бот';
+const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = {};
 let usernames = [SERVER_BOT];
-const messages = [];
+const messages = [START_MESSAGE];
 
 const port = process.env.PORT || 7070;
-const wss = new WS.Server({ port });
+const wsServer = new WS.Server({ port });
 
-wss.on('connection', (ws) => {
+wsServer.on('connection', (ws) => {
   const id = uuid();
   clients[id] = ws;
   console.log(`New client connected - id #${id}`); // eslint-disable-line no-console
 
+  // Отправление всех подключенных пользователей новому клиенту
   ws.send(JSON.stringify({ renderUsers: true, names: usernames }));
+
+  // Отправление всех сообщений новому клиенту
   if (messages.length !== 0) {
     ws.send(JSON.stringify({ renderMessages: true, messages }));
   }
 
+  // При получении сообщения от пользователя
   ws.on('message', (rawMessage) => {
     const message = JSON.parse(rawMessage);
 

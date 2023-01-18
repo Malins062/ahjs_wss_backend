@@ -5,12 +5,13 @@ const { ChatBot } = require('./components/chatbot/chatbot');
 const SERVER_BOT = 'Серверный бот';
 const START_MESSAGE = 'Добро пожаловать в чат!';
 
-const clients = {};
+const clients = new Set();
 let usernames = [SERVER_BOT];
 const messages = [START_MESSAGE];
 
 const port = process.env.PORT || 7070;
 const wsServer = new WS.Server({ port });
+console.log(`Starting WebSocket Server on port ${port}, listening connections...`);  // eslint-disable-line no-console
 
 wsServer.on('connection', (ws) => {
   const id = uuid();

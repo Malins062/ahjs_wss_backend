@@ -1,8 +1,10 @@
 const fs = require('fs');
 
-export default class ChatBot {
-  constructor(fileName = 'messages.txt') {
-    this.messages = ChatBot.readMessages(fileName);
+const FILE_NAME = __dirname + '/messages.txt';
+
+class Bot {
+  constructor(fileName = FILE_NAME) {
+    this.messages = Bot.readMessages(fileName);
   }
 
   static readMessages(fileName) {
@@ -21,3 +23,7 @@ export default class ChatBot {
     return this.messages[index];
   }
 }
+
+const ChatBot = new Bot();
+
+module.exports = ChatBot;

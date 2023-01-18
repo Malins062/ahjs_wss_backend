@@ -13,6 +13,8 @@
 
 ## Чат
 
+[![Build status](https://ci.appveyor.com/api/projects/status/uij08g676ylbsvnb/branch/main?svg=true)](https://ci.appveyor.com/project/Malins062/ahjs-wss-backend/branch/main)
+
 ### Легенда
 
 В рамках реализации корпоративного портала вам поручили организовать чат, и, конечно же, вы решили для этого использовать веб-сокеты.

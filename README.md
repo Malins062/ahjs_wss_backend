@@ -11,7 +11,7 @@
 
 ---
 
-## Чат
+## Чат (сервераня часть)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/uij08g676ylbsvnb/branch/main?svg=true)](https://ci.appveyor.com/project/Malins062/ahjs-wss-backend/branch/main)
 

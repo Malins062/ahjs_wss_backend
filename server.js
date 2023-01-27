@@ -6,7 +6,7 @@ const SERVER_BOT = 'Серверный бот';
 const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = new Set();
-let usernames = [SERVER_BOT];
+const userNames = [SERVER_BOT];
 const messages = [START_MESSAGE];
 
 const port = process.env.PORT || 7070;
@@ -19,7 +19,7 @@ wsServer.on('connection', (ws) => {
   console.log(`New client connected - id #${id}`); // eslint-disable-line no-console
 
   // Отправление всех подключенных пользователей новому клиенту
-  ws.send(JSON.stringify({ renderUsers: true, names: usernames }));
+  ws.send(JSON.stringify({ renderUsers: true, names: userNames }));
 
   // Отправление всех сообщений новому клиенту
   if (messages.length !== 0) {
@@ -30,20 +30,20 @@ wsServer.on('connection', (ws) => {
   ws.on('message', (rawMessage) => {
     const message = JSON.parse(rawMessage);
 
-    if (message.chooseUsername) {
-      if (usernames.every((name) => name !== message.username)) {
-        usernames.push(message.username);
-        clients[id].username = message.username;
-        const name = clients[id].username;
+    if (message.chooseUserName) {
+      if (userNames.every((name) => name !== message.userName)) {
+        userNames.push(message.userName);
+        clients[id].userName = message.userName;
+        const name = clients[id].userName;
 
         for (const idClient in clients) {
-          if (clients[idClient].username === name) {
+          if (clients[idClient].userName === name) {
             clients[idClient].send(
-              JSON.stringify({ nameIsFree: true, name: message.username }),
+              JSON.stringify({ nameIsFree: true, name: message.userName }),
             );
           } else {
             clients[idClient].send(
-              JSON.stringify({ renderNames: true, name: message.username }),
+              JSON.stringify({ renderNames: true, name: message.userName }),
             );
           }
         }

@@ -43,7 +43,7 @@ wsServer.on('connection', (ws) => {
             );
           } else {
             clients[idClient].send(
-              JSON.stringify({ renderNames: true, name: message.userName }),
+              JSON.stringify({ renderName: true, name: message.userName }),
             );
           }
         }

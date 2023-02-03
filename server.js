@@ -6,7 +6,7 @@ const SERVER_BOT = 'Серверный бот';
 const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = new Set();
-const userNames = [SERVER_BOT];
+var userNames = [SERVER_BOT];
 const messages = [START_MESSAGE];
 
 const port = process.env.PORT || 7070;
@@ -112,13 +112,13 @@ wsServer.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    usernames = usernames.filter((name) => name !== clients[id].username);
-    // for (const idClient in clients) {
-    //   clients[idClient].send(
-    //     JSON.stringify({ closeUser: true, name: clients[id].username }),
-    //   );
-    // }
-    console.log(usernames); // eslint-disable-line no-console
+    userNames = userNames.filter((name) => name !== clients[id].userName);
+    console.log(`User "${clients[id].userName}" logout. List of users: [${userNames}]`); // eslint-disable-line no-console
+    for (const idClient in clients) {
+      clients[idClient].send(
+        JSON.stringify({ closeUser: true, name: clients[id].userName }),
+      );
+    }
     delete clients[id];
   });
 });

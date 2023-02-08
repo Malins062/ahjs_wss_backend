@@ -68,7 +68,7 @@ wsServer.on('connection', (ws) => {
           clients[idClient].send(
             JSON.stringify({
               renderOwnMessage: true,
-              name: 'You',
+              name: 'Вы',
               message: message.messageText,
               date,
             }),

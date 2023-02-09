@@ -7,7 +7,7 @@ const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = new Set();
 var userNames = [SERVER_BOT];
-const messages = [START_MESSAGE];
+const messages = ['sss'];
 
 const port = process.env.PORT || 7070;
 const wsServer = new WS.Server({ port });
@@ -19,7 +19,7 @@ wsServer.on('connection', (ws) => {
   console.log(`New client connected - id #${id}`); // eslint-disable-line no-console
 
   // Отправление всех подключенных пользователей новому клиенту
-  ws.send(JSON.stringify({ renderUsers: true, names: userNames }));
+  clients[id].send(JSON.stringify({ renderUsers: true, names: userNames }));  
 
   // Отправление всех сообщений новому клиенту
   if (messages.length !== 0) {
@@ -41,6 +41,22 @@ wsServer.on('connection', (ws) => {
             clients[idClient].send(
               JSON.stringify({ nameIsFree: true, name: message.userName }),
             );
+
+            // Отправление первого сообщения новому пользователю от сервера
+            const date = new Date().getTime();
+            const name = SERVER_BOT;
+
+            const bot = new ChatBot();
+            const botMsg = bot.getBotText();
+            clients[idClient].send(
+              JSON.stringify({
+                renderMessage: true,
+                name,
+                message: botMsg,
+                date: date
+              })
+            );
+
           } else {
             clients[idClient].send(
               JSON.stringify({ renderName: true, name: message.userName }),
@@ -54,23 +70,25 @@ wsServer.on('connection', (ws) => {
     }
 
     if (message.chatMessage) {
-      const date = new Date().getTime();
-      const name = clients[id].username;
+      const date = new Date();
+      const name = clients[id].userName;
 
       messages.push({
         name,
         message: message.messageText,
-        date,
+        date: date,
       });
 
+      console.log('Messages', messages);
+
       for (const idClient in clients) {
-        if (clients[idClient].username === name) {
+        if (clients[idClient].userName === name) {
           clients[idClient].send(
             JSON.stringify({
               renderOwnMessage: true,
               name: 'Вы',
               message: message.messageText,
-              date,
+              date: message.date,
             }),
           );
         } else {
@@ -79,36 +97,37 @@ wsServer.on('connection', (ws) => {
               renderMessage: true,
               name,
               message: message.messageText,
-              date,
+              date: message.date,
             }),
           );
         }
       }
     }
 
-    if (message.chatMessage) {
-      const date = new Date().getTime();
-      const name = SERVER_BOT;
+    // if (message.chatMessage) {
+    //   const date = new Date().getTime();
+    //   const name = SERVER_BOT;
 
-      const bot = new ChatBot();
-      const botMsg = bot.getBotText();
-      const delay = Math.floor(Math.random() * (botMsg.length * 10));
-      setTimeout(() => {
-        messages.push({
-          name,
-          message: botMsg,
-          date,
-        });
-        ws.send(
-          JSON.stringify({
-            renderMessage: true,
-            name,
-            message: botMsg,
-            date,
-          }),
-        );
-      }, delay);
-    }
+    //   const bot = new ChatBot();
+    //   const botMsg = bot.getBotText();
+    //   const delay = Math.floor(Math.random() * (botMsg.length * 10));
+      
+    //   setTimeout(() => {
+    //     messages.push({
+    //       name,
+    //       message: botMsg,
+    //       date,
+    //     });
+    //     ws.send(
+    //       JSON.stringify({
+    //         renderMessage: true,
+    //         name,
+    //         message: botMsg,
+    //         date,
+    //       }),
+    //     );
+    //   }, delay);
+    // }
   });
 
   ws.on('close', () => {

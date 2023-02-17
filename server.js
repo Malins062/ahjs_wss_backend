@@ -7,7 +7,7 @@ const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = new Set();
 var userNames = [SERVER_BOT];
-const messages = ['sss'];
+const messages = [];
 
 const port = process.env.PORT || 7070;
 const wsServer = new WS.Server({ port });

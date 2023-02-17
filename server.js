@@ -41,22 +41,6 @@ wsServer.on('connection', (ws) => {
             clients[idClient].send(
               JSON.stringify({ nameIsFree: true, name: message.userName }),
             );
-
-            // Отправление первого сообщения новому пользователю от сервера
-            const date = new Date().getTime();
-            const name = SERVER_BOT;
-
-            const bot = new ChatBot();
-            const botMsg = bot.getBotText();
-            clients[idClient].send(
-              JSON.stringify({
-                renderMessage: true,
-                name,
-                message: botMsg,
-                date: date
-              })
-            );
-
           } else {
             clients[idClient].send(
               JSON.stringify({ renderName: true, name: message.userName }),
@@ -103,31 +87,6 @@ wsServer.on('connection', (ws) => {
         }
       }
     }
-
-    // if (message.chatMessage) {
-    //   const date = new Date().getTime();
-    //   const name = SERVER_BOT;
-
-    //   const bot = new ChatBot();
-    //   const botMsg = bot.getBotText();
-    //   const delay = Math.floor(Math.random() * (botMsg.length * 10));
-      
-    //   setTimeout(() => {
-    //     messages.push({
-    //       name,
-    //       message: botMsg,
-    //       date,
-    //     });
-    //     ws.send(
-    //       JSON.stringify({
-    //         renderMessage: true,
-    //         name,
-    //         message: botMsg,
-    //         date,
-    //       }),
-    //     );
-    //   }, delay);
-    // }
   });
 
   ws.on('close', () => {

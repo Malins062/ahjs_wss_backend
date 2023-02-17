@@ -54,13 +54,13 @@ wsServer.on('connection', (ws) => {
     }
 
     if (message.chatMessage) {
-      const date = new Date();
       const name = clients[id].userName;
+      message.date = new Date();
 
       messages.push({
         name,
         message: message.messageText,
-        date: date,
+        date: getFormattedDateTime(message.date),
       });
 
       console.log('Messages', messages);
@@ -100,3 +100,25 @@ wsServer.on('connection', (ws) => {
     delete clients[id];
   });
 });
+
+function getFormattedDateTime(date) {
+  const day = date.getDate() < 10
+    ? `0${date.getDate()}`
+    : date.getDate();
+  const month = date.getMonth() < 10
+    ? `0${date.getMonth() + 1}`
+    : date.getMonth();
+  const year = String(date.getFullYear()).slice(-2);
+  const hour = date.getHours() < 10
+    ? `0${date.getHours()}`
+    : date.getHours();
+  const minutes = date.getMinutes() < 10
+    ? `0${date.getMinutes()}`
+    : date.getMinutes();
+  const seconds = date.getSeconds() < 10
+    ? `0${date.getSeconds()}`
+    : date.getSeconds();
+  const formattedDate = `${hour}:${minutes}:${seconds} ${day}.${month}.${year}`;
+
+  return formattedDate;
+}

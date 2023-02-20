@@ -55,12 +55,12 @@ wsServer.on('connection', (ws) => {
 
     if (message.chatMessage) {
       const name = clients[id].userName;
-      message.date = new Date();
+      message.date = getFormattedDateTime(new Date());
 
       messages.push({
         name,
         message: message.messageText,
-        date: getFormattedDateTime(message.date),
+        date: message.date
       });
 
       console.log('Messages', messages);

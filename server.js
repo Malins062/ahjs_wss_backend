@@ -1,10 +1,8 @@
 const WS = require('ws');
 const { v4: uuid } = require('uuid');
 
-const SERVER_BOT = 'Серверный бот';
-
 const clients = new Set();
-let userNames = [SERVER_BOT];
+let userNames = [];
 const messages = [];
 
 const port = process.env.PORT || 7070;

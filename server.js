@@ -1,17 +1,37 @@
 const WS = require('ws');
 const { v4: uuid } = require('uuid');
-const { ChatBot } = require('./components/chatbot/chatbot');
 
 const SERVER_BOT = 'Серверный бот';
-const START_MESSAGE = 'Добро пожаловать в чат!';
 
 const clients = new Set();
-var userNames = [SERVER_BOT];
+let userNames = [SERVER_BOT];
 const messages = [];
 
 const port = process.env.PORT || 7070;
 const wsServer = new WS.Server({ port });
-console.log(`Starting WebSocket Server on port ${port}, listening connections...`);  // eslint-disable-line no-console
+console.log(`Starting WebSocket Server on port ${port}, listening connections...`); // eslint-disable-line no-console
+
+function getFormattedDateTime(date) {
+  const day = date.getDate() < 10
+    ? `0${date.getDate()}`
+    : date.getDate();
+  const month = date.getMonth() < 10
+    ? `0${date.getMonth() + 1}`
+    : date.getMonth();
+  const year = String(date.getFullYear()).slice(-2);
+  const hour = date.getHours() < 10
+    ? `0${date.getHours()}`
+    : date.getHours();
+  const minutes = date.getMinutes() < 10
+    ? `0${date.getMinutes()}`
+    : date.getMinutes();
+  const seconds = date.getSeconds() < 10
+    ? `0${date.getSeconds()}`
+    : date.getSeconds();
+  const formattedDate = `${day}.${month}.${year} ${hour}:${minutes}:${seconds}`;
+
+  return formattedDate;
+}
 
 wsServer.on('connection', (ws) => {
   const id = uuid();
@@ -19,7 +39,7 @@ wsServer.on('connection', (ws) => {
   console.log(`New client connected - id #${id}`); // eslint-disable-line no-console
 
   // Отправление всех подключенных пользователей новому клиенту
-  clients[id].send(JSON.stringify({ renderUsers: true, names: userNames }));  
+  clients[id].send(JSON.stringify({ renderUsers: true, names: userNames }));
 
   // Отправление всех сообщений новому клиенту
   if (messages.length !== 0) {
@@ -60,10 +80,10 @@ wsServer.on('connection', (ws) => {
       messages.push({
         name,
         message: message.messageText,
-        date: message.date
+        date: message.date,
       });
 
-      console.log('Messages', messages);
+      // console.log('Messages', messages);
 
       for (const idClient in clients) {
         if (clients[idClient].userName === name) {
@@ -93,32 +113,12 @@ wsServer.on('connection', (ws) => {
     userNames = userNames.filter((name) => name !== clients[id].userName);
     console.log(`User "${clients[id].userName}" logout. List of users: [${userNames}]`); // eslint-disable-line no-console
     for (const idClient in clients) {
-      clients[idClient].send(
-        JSON.stringify({ closeUser: true, name: clients[id].userName }),
-      );
+      if (Object.prototype.hasOwnProperty.call(clients, idClient)) {
+        clients[idClient].send(
+          JSON.stringify({ closeUser: true, name: clients[id].userName }),
+        );
+      }
     }
     delete clients[id];
   });
 });
-
-function getFormattedDateTime(date) {
-  const day = date.getDate() < 10
-    ? `0${date.getDate()}`
-    : date.getDate();
-  const month = date.getMonth() < 10
-    ? `0${date.getMonth() + 1}`
-    : date.getMonth();
-  const year = String(date.getFullYear()).slice(-2);
-  const hour = date.getHours() < 10
-    ? `0${date.getHours()}`
-    : date.getHours();
-  const minutes = date.getMinutes() < 10
-    ? `0${date.getMinutes()}`
-    : date.getMinutes();
-  const seconds = date.getSeconds() < 10
-    ? `0${date.getSeconds()}`
-    : date.getSeconds();
-  const formattedDate = `${hour}:${minutes}:${seconds} ${day}.${month}.${year}`;
-
-  return formattedDate;
-}

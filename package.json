@@ -2,7 +2,7 @@
   "name": "ahj_sse_wss_backend",
   "version": "1.0.0",
   "description": "Example SSE WSS Server",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "forever server.js",
     "watch": "forever -w server.js",
